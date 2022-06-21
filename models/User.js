@@ -1,6 +1,6 @@
 'use strict';
 const { Model, DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 module.exports = ( sequelize ) => {
 
@@ -11,10 +11,10 @@ module.exports = ( sequelize ) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: {
+        notNull: { /* if value is null */
           msg: 'A first name is required'
         }, 
-        notEmpty: {
+        notEmpty: { /* if value is an empty string */ 
           msg: 'Please provide a first name'
         }
       }
@@ -41,7 +41,7 @@ module.exports = ( sequelize ) => {
         notNull: {
           msg: 'An email is required'
         },
-        isEmail: {
+        isEmail: { /* if value is not valid email format */
           msg: 'Please provide a valid email address'
         }
       }
@@ -56,7 +56,7 @@ module.exports = ( sequelize ) => {
         notEmpty: {
           msg: 'Please provide a password'
         },
-        len: {
+        len: { /* password length arguments */
           args: [8, 20],
           msg: 'The password should be between 8 and 20 characters in length'
         }
