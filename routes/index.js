@@ -8,7 +8,19 @@ const { User } = require('../models');
 /* USER ROUTES */
 
 // return all properties and values for the currently authenticated User
-router.get('/users', asyncHandler( async (req, res) => {
+router.get('/users', authenticateUser, asyncHandler( async (req, res) => {
+
+  // retrieve the current authenticated user's information from the Request object's currentUser property
+  const user = req.currentUser;
+
+  // use the Response object's json() method to return the current user's information formatted as JSON
+  res.json({
+    "firstName": user.firstName,
+    "lastName": user.lastName,
+    "emailAddress": user.emailAddress,
+    "password": user.password
+  });
+
   res.status(200);
 }));
 
