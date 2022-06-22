@@ -27,7 +27,10 @@ router.get('/users', authenticateUser, asyncHandler( async (req, res) => {
 // create a new user
 router.post('/users', asyncHandler( async (req, res) => {
   try {
+    // wait to create new user using info in request body
     await User.create(req.body);
+    // set location header to '/'
+    res.setHeader('Location', '/');
     res.status(201);
   } catch(error) {
     if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
