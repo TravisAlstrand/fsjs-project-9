@@ -15,7 +15,7 @@ exports.authenticateUser = async (req, res, next) => {
   // if the user's credentials are available...
   if (credentials) {
 
-    console.log(credentials);
+    console.log(credentials); /* ==== DELETE THIS LINE BEFORE SUBMITTING! =============== */
 
     // find a user in db with a matching email address in request
     const user = await User.findOne({ where: {emailAddress: credentials.name} });
@@ -33,7 +33,7 @@ exports.authenticateUser = async (req, res, next) => {
         // Store the user on the Request object
         // req.currentUser means that you're adding a property named currentUser to the request object and setting it to the authenticated user.
         req.currentUser = user;
-
+        
       } else {
         message = `Authentication error for ${credentials.name}`;
       }
