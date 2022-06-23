@@ -15,8 +15,6 @@ exports.authenticateUser = async (req, res, next) => {
   // if the user's credentials are available...
   if (credentials) {
 
-    console.log(credentials); /* ==== DELETE THIS LINE BEFORE SUBMITTING! =============== */
-
     // find a user in db with a matching email address in request
     const user = await User.findOne({ where: {emailAddress: credentials.name} });
 
