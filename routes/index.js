@@ -49,11 +49,17 @@ router.post('/users', asyncHandler( async (req, res) => {
 router.get('/courses', asyncHandler( async (req, res) => {
 
   // array to store all courses
-  const allCourses = await Course.findAll();
+  const allCourses = await Course.findAll({
+    include: {
+      model: User, 
+      as: 'creator',
+      attributes: ['firstName', 'lastName', 'emailAddress']
+    }
+  });
 
   // create new array, excluding 'created at'/'updated at' properties & values
-  const courses = allCourses.map(({id, title, description, estimatedTime, materialsNeeded, userId}) => {
-    return { id, title, description, estimatedTime, materialsNeeded, userId};
+  const courses = allCourses.map(({id, title, description, estimatedTime, materialsNeeded, userId, creator}) => {
+    return { id, title, description, estimatedTime, materialsNeeded, userId, creator};
   });
   res.status(200);
   res.json(courses);
@@ -66,7 +72,13 @@ router.get('/courses/:id', asyncHandler( async (req, res) => {
   const courseId = req.params.id;
 
   // variable for course object with requested id
-  const course = await Course.findByPk(courseId);
+  const course = await Course.findByPk(courseId, {
+    include: {
+      model: User,
+      as: 'creator',
+      attributes: ['firstName', 'lastName', 'emailAddress']
+    }
+  });
 
   // check if course exists
   if (course === null) {
@@ -74,14 +86,7 @@ router.get('/courses/:id', asyncHandler( async (req, res) => {
     res.json({"message": "Course does not exist"});
   } else {
     res.status(200);
-    res.json({
-      "id": course.id,
-      "title": course.title,
-      "description": course.description,
-      "estimatedTime": course.estimatedTime,
-      "materialsNeeded": course.materialsNeeded,
-      "userId": course.userId
-    });
+    res.json({course});
   }
 }));
 
@@ -132,7 +137,7 @@ router.put('/courses/:id', authenticateUser, asyncHandler( async (req, res) => {
 
         // update the course with request info
         await course.update(req.body);
-        res.status(201)
+        res.status(204)
         res.end();
       } else { /* if user is not course creator... */
         res.status(403);
